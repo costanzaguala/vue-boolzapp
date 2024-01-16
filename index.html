@@ -1,83 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title>Boolzapp</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- link css -->
-        <link rel="stylesheet" href="css/styles.css">
+    <title>Boolzapp</title>
 
-        <!-- font awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- link css -->
+    <link rel="stylesheet" href="css/styles.css">
 
-        <!-- link VueJS -->
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    </head>
+    <!-- link VueJS -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
-    <body>
+</head>
 
-        <main id="container-chat">
+<body>
 
-            <div id="app" data-v-app>
+    <main id="container-chat">
 
-                <aside>
-                    <header>
+        <div id="app" data-v-app>
 
-                        <div class="container-avatar">
-                            <img src="./img/avatar_1.jpg" alt="">
-                        </div>
+            <aside>
+                <header>
 
-                        <div class="nome-avatar">
-                            <p>Costanza</p>
-                        </div>
+                    <div class="container-avatar">
+                        <img src="./img/avatar_1.jpg" alt="">
+                    </div>
 
+                    <div class="nome-avatar">
+                        <p>Costanza</p>
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-circle-notch"></i>
+                        <i class="fa-solid fa-message"></i>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+
+                </header>
+
+                <section id="notification">
+
+                    <div>
+                        <i class="fa-solid fa-bell-slash"></i>
+                    </div>
+
+                    <div class="notification-text">
+                        <p>Ricevi notifiche di nuovi messaggi</p>
+                        <p>Attiva notifiche desktop</p>
+                    </div>
+
+                </section>
+
+                <section id="search">
+
+                    <div class="search-input">
                         <div>
-                            <i class="fa-solid fa-circle-notch"></i>
-                            <i class="fa-solid fa-message"></i>
-                            <i class="fa-solid fa-ellipsis-vertical"></i>   
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
 
-                    </header>
+                        <input type="text" placeholder="Cerca o inizia nuova chat" @keyup="searchContact()"
+                            v-model="whoFind">>
 
-                    <section id="notification">
+                    </div>
 
-                        <div>
-                            <i class="fa-solid fa-bell-slash"></i>
-                        </div>
+                </section>
 
-                        <div class="notification-text">
-                            <p>Ricevi notifiche di nuovi messaggi</p>
-                            <p>Attiva notifiche desktop</p>
-                        </div>
+                <main>
+                    <template v-for="(contact, i) in contacts">
+                        <div v-if="contact.visible" class="single-contact-container active"
+                            :class="(i==activeContact)? 'active':''" @click="activeContact=i">
 
-                    </section>
-
-                    <section id="search">
-
-                        <div class="search-input">
-                            <div>                           
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                            <div class="container-avatar">
+                                <img :src="contact.avatar" :alt="contact.name">
                             </div>
-                            
-                            <input type="text" placeholder="Cerca o inizia nuova chat"   @keyup="searchContact()" v-model="whoFind">>
-                            
-                        </div>
-
-                    </section>
-
-                    <main>
-
-                        <div v-for="(contact, i) in contacts" class="single-contact-container active" :class="(i==activeContact)? 'active':''" @click="activeContact=i">
-
-                            <div v-if="(contact.visible==true)" class="container-avatar">
-                                <img :src="contact.avatar" :alt="contact.name">                            </div>
 
                             <div class="nome-avatar">
                                 {{contact.name}}
-                            <div>
+                                <div>
                                     <p>Ultimo messaggio inviato</p>
                                 </div>
                             </div>
@@ -87,64 +93,67 @@
                             </div>
 
                         </div>
+                    </template>
+                </main>
 
-                    </main>
+            </aside>
 
-                </aside>
+            <section id="right-side">
 
-                <section id="right-side">
+                <header>
+                    <div class="container-avatar">
+                        <img :src="contacts[0].avatar" alt="">
+                    </div>
 
-                    <header>
-                        <div class="container-avatar">
-                            <img :src="contacts[0].avatar" alt="">
+                    <div class="nome-avatar">
+                        {{contacts[0].name}}
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <i class="fa-solid fa-paperclip"></i>
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </div>
+                </header>
+
+                <main id="right-chat-container">
+
+                    <div v-for="(elem, i) in contacts[activeContact].messages"
+                        :class="(contacts[activeContact].messages[i].status === 'sent') ? 'chat-message-line-sent' : 'chat-message-line-received'">
+                        <div class="chat-message"
+                            :class="(contacts[activeContact].messages[i].status ==='sent') ? 'sent':'received' ">
+                            {{contacts[activeContact].messages[i].message}}
                         </div>
 
-                        <div class="nome-avatar">
-                            {{contacts[0].name}}
-                        </div>
+                    </div>
 
-                        <div>
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            <i class="fa-solid fa-paperclip"></i>
-                            <i class="fa-solid fa-ellipsis-vertical"></i>  
-                        </div>
-                    </header>
+                </main>
 
-                    <main id="right-chat-container">
+                <footer>
+                    <div>
+                        <i class="fa-regular fa-face-smile fa-xl"></i>
+                    </div>
 
-                            <div v-for="(elem, i) in contacts[activeContact].messages" class="chat-message-line-sent">
-                                <div class="chat-message sent" :class="(contacts[activeContact].messages[i].status ==='sent') ? 'sent':'received' " >
-                                    {{contacts[activeContact].messages[i].message}}
-                                </div>
-                                
-                            </div>
+                    <div class="input">
+                        <input type="text" placeholder="Scrivi un messaggio" v-model="newMessage"
+                            @keyup.enter="sendMessage()">
+                    </div>
 
-                    </main>
+                    <div>
+                        <i class="fa-solid fa-microphone fa-xl"></i>
+                    </div>
+            </section>
 
-                    <footer>
-                        <div>
-                            <i class="fa-regular fa-face-smile fa-xl"></i>
-                        </div>
+            </section>
 
-                        <div class="input">
-                                <input type="text" placeholder="Scrivi un messaggio" v-model="newMessage" @keyup.enter="sendMessage()">
-                        </div>
+        </div>
 
-                        <div>
-                            <i class="fa-solid fa-microphone fa-xl"></i>  
-                        </div>
-                    </section>
-
-                </section>
-
-            </div>
-
-        </main>
+    </main>
 
     <!-- JAVASCRIPT -->
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="script.js"></script>
 
-    </body>
+</body>
 
 </html>
