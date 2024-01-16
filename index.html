@@ -62,7 +62,7 @@
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </div>
                             
-                            <input type="text" placeholder="Cerca o inizia nuova chat">
+                            <input type="text" placeholder="Cerca o inizia nuova chat"   @keyup="searchContact()" v-model="whoFind">>
                             
                         </div>
 
@@ -72,7 +72,7 @@
 
                         <div v-for="(contact, i) in contacts" class="single-contact-container active" :class="(i==activeContact)? 'active':''" @click="activeContact=i">
 
-                            <div class="container-avatar">
+                            <div v-if="(contact.visible==true)" class="container-avatar">
                                 <img :src="contact.avatar" :alt="contact.name">                            </div>
 
                             <div class="nome-avatar">
@@ -116,6 +116,7 @@
                                 <div class="chat-message sent" :class="(contacts[activeContact].messages[i].status ==='sent') ? 'sent':'received' " >
                                     {{contacts[activeContact].messages[i].message}}
                                 </div>
+                                
                             </div>
 
                     </main>
@@ -126,7 +127,7 @@
                         </div>
 
                         <div class="input">
-                                <input type="text" placeholder="Cerca o inizia nuova chat">
+                                <input type="text" placeholder="Scrivi un messaggio" v-model="newMessage" @keyup.enter="sendMessage()">
                         </div>
 
                         <div>

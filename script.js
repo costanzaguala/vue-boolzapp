@@ -3,6 +3,8 @@ createApp({
     data() {
         return {
             activeContact: 0,
+            newMessage: '',
+            whoFind: '',
             contacts: [
                 {
                     name: 'Michele',
@@ -171,10 +173,47 @@ createApp({
               
         };
     },
-    methods:{
-        prova(){
-            alert("ciao")
+
+    methods: {
+        sendMessage(){
+            if(this.newMessage.trim().length > 0){
+               this.contacts[this.activeContact].messages.push({
+                date: '10/01/2020 15:51:00',
+                message: this.newMessage,
+                status: 'sent'
+                })
+            }
+            this.newMessage = "";
+            setTimeout(() => this.receivedMessage(), 1000);
+        },
+        receivedMessage(){
+            this.contacts[this.activeContact].messages.push({
+                date: '10/01/2020 15:51:00',
+                message: 'ok',
+                status: 'received'
+            })
+            
+        },
+        searchContact(){
+            if(this.whoFind.trim()==""){
+                for (let i = 0; i < this.contacts.length; i++) {
+                    this.contacts[i].visible = true;
+                }
+            }
+            else{
+                for (let i = 0; i < this.contacts.length; i++) {
+                    const name = this.contacts[i].name.toLowerCase();
+                    this.whoFind = this.whoFind.toLowerCase()
+                    if(name.includes(this.whoFind)){
+                        this.contacts[i].visible=true;
+                    }
+                    else{
+                        this.contacts[i].visible=false;
+                    }
+                }
+            }
+            console.log(this.contacts[i])
+            console.log(name.includes(this.whoFind))    
         }
     }
-
 }).mount('#app');
